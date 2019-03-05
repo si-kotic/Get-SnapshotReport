@@ -4,7 +4,7 @@ Function Get-SnapshotReport {
         [String]$ESXiUsername,
         [SecureString]$ESXiSecurePassword
     )
-
+    Write-Debug -Message "ESXiSecurePassword = $ESXiSecurePassword"
     $ESXiCredentials = New-Object System.Management.Automation.PSCredential($ESXiUsername,$ESXiSecurePassword)
     Connect-VIServer -Server $ESXiServer -Credential $ESXiCredentials
 
