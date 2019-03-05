@@ -1,10 +1,12 @@
 Function Get-SnapshotReport {
     Param (
         [String]$ESXiServer,
-        $EncrpytedCredentials
+        [String]$ESXiUsername,
+        [SecureString]$ESXiEncrpytedPassword
     )
 
-    Connect-VIServer -Server $ESXiServer
+    $ESXiCredentials = New-Object System.Management.Automation.PSCredential($ESXiUsername,$ESXiEncrpytedPassword)
+    Connect-VIServer -Server $ESXiServer -Credential $ESXiCredentials
 
     Get-VM | Foreach-Object {
         $vm = $_.Name
@@ -21,5 +23,5 @@ Function Get-SnapshotReport {
             $Report
         }
     }
-
+    Disconnect-VIServer -Server $ESXiServer
 }
