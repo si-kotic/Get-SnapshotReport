@@ -29,6 +29,7 @@ Get-SnapshotReport -ESXiServer servername.domain.com -ESXiUsername "domain\usern
 
 ## Example Output
 
+```
 Name                           Port  User                    
 ----                           ----  ----                    
 servername.domain.com          443   DOMAIN\username
@@ -40,3 +41,4 @@ Created Date : 12/01/2013 09:51:52
 Size (MB)    : 48488.62887287139892578125
 Is Current   : True
 Age (Days)   : 2243.18111577797
+```
