@@ -23,10 +23,18 @@ Function Get-SnapshotReport {
             $xmlChannel = $xmlBody.CreateNode("element","channel",$null)
             $xmlChannel.InnerText = $vm
             $xmlValue = $xmlBody.CreateNode("element","value",$null)
-            $xmlValue.InnerText = ((Get-Date) - $_.Created).Days
+            $snapshotAge = ((Get-Date) - $_.Created).Days
+            $xmlValue.InnerText = $snapshotAge
+            $xmlWarning = $xmlBody.CreateNode("element","Warning",$null)
+            IF ($snapshotAge -ge 10) {
+                $xmlWarning.InnerText = "1"
+            } ELSE {
+                $xmlWarning.InnerText = "0"
+            }
             $xmlResult.AppendChild($xmlChannel)
             $xmlResult.AppendChild($xmlValue)
             $xmlResult.AppendChild($xmlUnit)
+            $xmlResult.AppendChild($xmlWarning)
             $xmlRoot.AppendChild($xmlResult)
         }
     }
