@@ -1,6 +1,6 @@
 # Get-SnapshotReport
 
-This function will provide a report on all snapshots for all VMs on a VMware ESXi Host.
+This function will interrogate all snapshots for all VMs on a VMware ESXi Host and report the age of each snapshot back to PRTG.
 
 ## Parameters
 
@@ -23,22 +23,11 @@ To obtain your encrypted password string, run the following command as the user 
 Once you have your encrypted string, you can provide the function to convert it to a secure string as your parameter value:
 `ConvertTo-SecureString -String "ENCRYPTED STRING"`
 
+**PrtgUri**
+This parameter has a default value of the URI of a sensor in PRTG which is configured to consume these messages and does not need to be provided.
+
+You can specify this parameter in order to override the default value.
+
 ## Usage
 
 Get-SnapshotReport -ESXiServer servername.domain.com -ESXiUsername "domain\username" -ESXiSecurePassword (ConvertTo-SecureString -String "ENCRYPTED STRING")
-
-## Example Output
-
-```
-Name                           Port  User                    
-----                           ----  ----                    
-servername.domain.com          443   DOMAIN\username
-
-Description  : Before a reboot.
-State        : PoweredOn
-VM Name      : INDEXSVR
-Created Date : 12/01/2013 09:51:52
-Size (MB)    : 48488.62887287139892578125
-Is Current   : True
-Age (Days)   : 2243.18111577797
-```
