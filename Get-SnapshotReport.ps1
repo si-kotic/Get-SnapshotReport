@@ -21,7 +21,7 @@ Function Get-SnapshotReport {
             $xmlUnit = $xmlBody.CreateNode("element","CustomUnit",$null)
             $xmlUnit.InnerText = "Days"
             $xmlChannel = $xmlBody.CreateNode("element","channel",$null)
-            $xmlChannel.InnerText = $vm
+            $xmlChannel.InnerText = "$vm\$($_.name)"
             $xmlValue = $xmlBody.CreateNode("element","value",$null)
             $snapshotAge = ((Get-Date) - $_.Created).Days
             $xmlValue.InnerText = $snapshotAge
