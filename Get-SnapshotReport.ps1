@@ -5,6 +5,13 @@ Function Get-SnapshotReport {
         [SecureString]$ESXiSecurePassword,
         [Uri]$PrtgUri = "http://brazil.bridgepartners.local:5050/9F53BAD6-E2FF-40B1-A25A-C845FF8CA182"
     )
+
+	IF (!(Get-InstalledModule -Name VMware.PowerCLI)) {
+		Write-Output "Installing required module:  VMware.PowerCLI"
+		Install-Module -Name VMware.PowerCLI
+	}
+
+
     Write-Debug -Message "ESXiSecurePassword = $ESXiSecurePassword"
     $ESXiCredentials = New-Object System.Management.Automation.PSCredential($ESXiUsername,$ESXiSecurePassword)
     Connect-VIServer -Server $ESXiServer -Credential $ESXiCredentials
