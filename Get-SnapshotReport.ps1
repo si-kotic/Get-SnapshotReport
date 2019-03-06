@@ -18,12 +18,15 @@ Function Get-SnapshotReport {
         $vm = $_.Name
         Get-Snapshot -VM $_.Name | Foreach-Object {
             $xmlResult = $xmlBody.CreateNode("element","result",$null)
+            $xmlUnit = $xmlBody.CreateNode("element","CustomUnit",$null)
+            $xmlUnit.InnerText = "Days"
             $xmlChannel = $xmlBody.CreateNode("element","channel",$null)
             $xmlChannel.InnerText = $vm
             $xmlValue = $xmlBody.CreateNode("element","value",$null)
             $xmlValue.InnerText = ((Get-Date) - $_.Created).Days
             $xmlResult.AppendChild($xmlChannel)
             $xmlResult.AppendChild($xmlValue)
+            $xmlResult.AppendChild($xmlUnit)
             $xmlRoot.AppendChild($xmlResult)
         }
     }
