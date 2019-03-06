@@ -40,6 +40,6 @@ Function Get-SnapshotReport {
     }
     Disconnect-VIServer -Server $ESXiServer -Confirm:$false
     $xmlBody.AppendChild($xmlRoot)
-    #Invoke-RestMethod -Method POST -ContentType "application/xml" -UseBasicParsing -Uri $PrtgUri -Body $xmlBody
-    $xmlBody.OuterXml
+    Invoke-RestMethod -Method POST -ContentType "application/xml" -UseBasicParsing -Uri $PrtgUri -Body $xmlBody
+    #$xmlBody.OuterXml
 }
