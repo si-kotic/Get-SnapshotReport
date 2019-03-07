@@ -4,7 +4,8 @@ Function Get-SnapshotReport {
         [parameter(Mandatory)][String]$ESXiUsername,
         [parameter(Mandatory)][SecureString]$ESXiSecurePassword,
         [Uri]$PrtgUri = "http://brazil.bridgepartners.local:5050/",
-        $PrtgSensorGUID = "9F53BAD6-E2FF-40B1-A25A-C845FF8CA182"
+        $PrtgSensorGUID = "9F53BAD6-E2FF-40B1-A25A-C845FF8CA182",
+        [Int]$WarningThreshold = 10
     )
 
     Write-Debug -Message "CHECKING FOR PowerCLI MODULE. INSTALLING IF REQUIRED."
@@ -41,7 +42,7 @@ Function Get-SnapshotReport {
             $snapshotAge = ((Get-Date) - $_.Created).Days
             $xmlValue.InnerText = $snapshotAge
             $xmlWarning = $xmlBody.CreateNode("element","Warning",$null)
-            IF ($snapshotAge -ge 10) {
+            IF ($snapshotAge -ge $WarningThreshold) {
                 Write-Debug -Message "AGE ABOVE THRESHOLD, SETTING WARNING FLAG"
                 $xmlWarning.InnerText = "1"
             } ELSE {
