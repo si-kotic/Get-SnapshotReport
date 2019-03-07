@@ -16,18 +16,22 @@ Function Get-SnapshotReport {
     Write-Debug -Message "ASSEMBLING PRTG SENSOR URI"
     $prtgSensorUri = $PrtgUri.AbsoluteUri + $PrtgSensorGUID
 
-    Write-Debug -Message "ESXiSecurePassword = $ESXiSecurePassword"
+    Write-Debug -Message "CONNECTING TO ESX SERVER"
     $ESXiCredentials = New-Object System.Management.Automation.PSCredential($ESXiUsername,$ESXiSecurePassword)
     Connect-VIServer -Server $ESXiServer -Credential $ESXiCredentials
 
+    Write-Debug -Message "CREATING NEW XML DOCUMENT AND DECLARATION"
     [XML]$xmlBody = New-Object System.Xml.XmlDocument
     $xmlDeclaration = $xmlBody.CreateXmlDeclaration("1.0","UTF-8",$null)
     $xmlBody.AppendChild($xmlDeclaration) | Out-Null
     $xmlRoot = $xmlBody.CreateNode("element","prtg",$null)
 
+    Write-Debug -Message "GETTING ALL VMS"
     Get-VM | Foreach-Object {
         $vm = $_.Name
+        Write-Debug -Message "GETTING ALL SNAPSHOTS FOR $vm"
         Get-Snapshot -VM $_.Name | Foreach-Object {
+            Write-Debug -Message "POPULATING XML FOR SNAPSHOT: $($_.name)"
             $xmlResult = $xmlBody.CreateNode("element","result",$null)
             $xmlUnit = $xmlBody.CreateNode("element","CustomUnit",$null)
             $xmlUnit.InnerText = "Days"
@@ -38,6 +42,7 @@ Function Get-SnapshotReport {
             $xmlValue.InnerText = $snapshotAge
             $xmlWarning = $xmlBody.CreateNode("element","Warning",$null)
             IF ($snapshotAge -ge 10) {
+                Write-Debug -Message "AGE ABOVE THRESHOLD, SETTING WARNING FLAG"
                 $xmlWarning.InnerText = "1"
             } ELSE {
                 $xmlWarning.InnerText = "0"
@@ -49,8 +54,11 @@ Function Get-SnapshotReport {
             $xmlRoot.AppendChild($xmlResult)
         }
     }
+    Write-Debug -Message "DISCONNECTING FROM ESX SERVER"
     Disconnect-VIServer -Server $ESXiServer -Confirm:$false
+    Write-Debug -Message "COMPILING XML"
     $xmlBody.AppendChild($xmlRoot)
+    Write-Debug -Message "SUBMITTING RESULTS TO $PrtgSensorUri"
     Invoke-RestMethod -Method POST -ContentType "application/xml" -UseBasicParsing -Uri $PrtgSensorUri -Body $xmlBody
     #$xmlBody.OuterXml
 }
