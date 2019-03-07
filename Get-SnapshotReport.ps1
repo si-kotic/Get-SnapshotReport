@@ -1,16 +1,20 @@
 Function Get-SnapshotReport {
     Param (
-        [String]$ESXiServer,
-        [String]$ESXiUsername,
-        [SecureString]$ESXiSecurePassword,
-        [Uri]$PrtgUri = "http://brazil.bridgepartners.local:5050/9F53BAD6-E2FF-40B1-A25A-C845FF8CA182"
+        [parameter(Mandatory)][String]$ESXiServer,
+        [parameter(Mandatory)][String]$ESXiUsername,
+        [parameter(Mandatory)][SecureString]$ESXiSecurePassword,
+        [Uri]$PrtgUri = "http://brazil.bridgepartners.local:5050/",
+        $PrtgSensorGUID = "9F53BAD6-E2FF-40B1-A25A-C845FF8CA182"
     )
 
+    Write-Debug -Message "CHECKING FOR PowerCLI MODULE. INSTALLING IF REQUIRED."
 	IF (!(Get-InstalledModule -Name VMware.PowerCLI)) {
 		Write-Output "Installing required module:  VMware.PowerCLI"
 		Install-Module -Name VMware.PowerCLI
-	}
-
+    }
+    
+    Write-Debug -Message "ASSEMBLING PRTG SENSOR URI"
+    $prtgSensorUri = $PrtgUri.AbsoluteUri + $PrtgSensorGUID
 
     Write-Debug -Message "ESXiSecurePassword = $ESXiSecurePassword"
     $ESXiCredentials = New-Object System.Management.Automation.PSCredential($ESXiUsername,$ESXiSecurePassword)
@@ -47,6 +51,6 @@ Function Get-SnapshotReport {
     }
     Disconnect-VIServer -Server $ESXiServer -Confirm:$false
     $xmlBody.AppendChild($xmlRoot)
-    Invoke-RestMethod -Method POST -ContentType "application/xml" -UseBasicParsing -Uri $PrtgUri -Body $xmlBody
+    Invoke-RestMethod -Method POST -ContentType "application/xml" -UseBasicParsing -Uri $PrtgSensorUri -Body $xmlBody
     #$xmlBody.OuterXml
 }
