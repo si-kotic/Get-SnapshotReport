@@ -24,10 +24,16 @@ Once you have your encrypted string, you can provide the function to convert it 
 `ConvertTo-SecureString -String "ENCRYPTED STRING"`
 
 **PrtgUri**
-This parameter has a default value of the URI of a sensor in PRTG which is configured to consume these messages and does not need to be provided.
+This parameter allows you to specify the base URI of a PRTG system.  Currently it has a default value of the base URI for PRTG at Bridge Partners.  
+
+**PrtgSensorGUID**
+This parameter allows you to provide the GUID of the sensor to which you wish to send the data.  You can find this by editing the sensor settings within PRTG.
 
 You can specify this parameter in order to override the default value.
 
+**WarningThreshold**
+This parameter allows you to specify the age of a snapshot, in days, which is considered 'too old'.  If a snapshot exceeds this age then it is flagged as a warning within PRTG.  Currently it defaults to 10 days but you can specify this parameter to overwrite the value.
+
 ## Usage
 
-Get-SnapshotReport -ESXiServer servername.domain.com -ESXiUsername "domain\username" -ESXiSecurePassword (ConvertTo-SecureString -String "ENCRYPTED STRING")
+`Get-SnapshotReport -ESXiServer servername.domain.com -ESXiUsername "domain\username" -ESXiSecurePassword (ConvertTo-SecureString -String "ENCRYPTED STRING")`
